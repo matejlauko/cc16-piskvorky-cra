@@ -1,25 +1,12 @@
-import {createStore} from 'redux';
+import {applyMiddleware, createStore} from 'redux';
+import reducer from './reducer';
+import createLogger from 'redux-logger';
 
-const initialState = {
-  name: ''
-}
+const logger = createLogger();
 
-function reducer(state, action) {
-  if (!state) return initialState;
-
-  console.log('dispatched action', action);
-
-  switch (action.type) {
-    case 'START':
-      return {
-        ...state,
-        name: action.name
-      }
-  }
-
-  return state;
-}
-
-const store = createStore(reducer);
+const store = createStore(
+  reducer,
+  applyMiddleware(logger)
+);
 
 export default store;
