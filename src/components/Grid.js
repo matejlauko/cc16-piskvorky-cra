@@ -1,12 +1,14 @@
 import React, {PropTypes} from 'react';
+import store from '../store';
+import {fillField} from '../actions';
 
 const circle = require('../circle.svg');
 const cross = require('../cross.svg');
 
-function Field({field, fieldIndex, fillField}) {
+function Field({field, fieldIndex}) {
   function handleFieldFilled(e) {
     e.preventDefault();
-    fillField(fieldIndex)
+    store.dispatch(fillField(field.id))
   }
 
   switch (field.filled) {
@@ -42,7 +44,6 @@ class Grid extends React.Component {
         {this.props.grid.map((field, index) => (
           <Field
             field={field}
-            fieldIndex={index}
             fillField={this.props.fillField}
             key={index}
           />

@@ -14,14 +14,35 @@ class App extends Component {
     this.props.reset();
   }
 
+  handleLoadGameClick = () => {
+    const name = this.refs.nameInput.value;
+    this.props.loadGame(name);
+  }
+
   render() {
+    const buttons = (this.props.name)
+      ? (
+        <div className="buttons">
+          <button className="button" onClick={this.handleResetClick}>Reset</button>
+        </div>
+      ) : (
+        <div className="buttons">
+          <button className="button" onClick={this.handleStartClick}>Start</button>
+          <button className="button" onClick={this.handleLoadGameClick}>Naloadovat hru</button>
+        </div>
+      );
+
     return (
       <div className="App">
 
-        {!this.props.name && (
+        {!this.props.name && !this.props.loadingGame && (
           <div className="name">
-            <input className="name-input" type="text" ref="nameInput" placeholder="Jméno hráče" />
+            <input className="name-input" type="text" ref="nameInput" placeholder="Název hry" />
           </div>
+        )}
+
+        {this.props.loadingGame && (
+          <p><strong>Loaduji hru</strong></p>
         )}
 
         {this.props.name && (
@@ -32,19 +53,16 @@ class App extends Component {
           />
         )}
 
-        <div className="buttons">
-          {(this.props.name)
-            ? <button className="button" onClick={this.handleResetClick}>Reset</button>
-            : <button className="button" onClick={this.handleStartClick}>Start</button>
-          }
-        </div>
+        {buttons}
 
-        <p className="turn">
-          Na řadě je: {this.props.turn === 'x'
-            ? <img className="turn-img" src={require('./cross.svg')} alt="cross" />
-            : <img className="turn-img" src={require('./circle.svg')} alt="circle" />
-          }
-      </p>
+        {this.props.name && (
+          <p className="turn">
+            Na řadě je: {this.props.turn === 'x'
+              ? <img className="turn-img" src={require('./cross.svg')} alt="cross" />
+              : <img className="turn-img" src={require('./circle.svg')} alt="circle" />
+            }
+          </p>
+        )}
 
       </div>
     );
@@ -56,7 +74,8 @@ function mapStateToProps(state) {
   const gameFinished = grid.every((field) => field.filled !== null);
 
   return {
-    name: state.name,
+    name: state.base.name,
+    loadingGame: state.base.loadingGame,
     turn: state.play.turn,
     grid,
     gameFinished
